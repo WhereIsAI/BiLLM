@@ -17,7 +17,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r pytest pytest-cov pytest-sugar
+        python -m pip install -U pdm pytest pytest-cov pytest-sugar
+        pdm install --no-lock
     - name: Analysing the code with pytest
       run: |
         pytest -vvvv --cov=BiLLM tests/
