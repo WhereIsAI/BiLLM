@@ -53,8 +53,8 @@ Tool for converting LLMs from uni-directional to bi-directional for tasks like c
 
 ```bash
 $ cd examples
-$ WANDB_MODE=disabled BiLLM_START_INDEX=0 python billm_ner.py \
---model_name_or_path NousResearch/Llama-2-7b-h \
+$ WANDB_MODE=disabled BiLLM_START_INDEX=0 CUDA_VISIBLE_DEVICES=0 python billm_ner.py \
+--model_name_or_path mistralai/Mistral-7B-v0.1 \
 --dataset_name_or_path conll2003
 ```
 
