@@ -143,7 +143,7 @@ class MistralModel(MistralPreTrainedModel):
         all_self_attns = () if output_attentions else None
         next_decoder_cache = None
 
-        for is_bidirectional, decoder_layer in self.layers:
+        for is_bidirectional, decoder_layer in zip(self.bidirectionas, self.layers):
             if output_hidden_states:
                 all_hidden_states += (hidden_states,)
 

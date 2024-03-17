@@ -1,85 +1,71 @@
 # -*- coding: utf-8 -*-
 
-import sys
+import argparse
 
 import numpy as np
 import evaluate
-import torch.nn as nn
 from datasets import load_dataset
 from transformers import AutoTokenizer
 from transformers import DataCollatorForTokenClassification
 from transformers import TrainingArguments, Trainer
 from peft import get_peft_model, LoraConfig, TaskType
-from billm import LlamaForTokenClassification
+from billm import LlamaForTokenClassification, MistralForTokenClassification
 
 
-def find_all_linear_names(model, linear_type=None):
-    """
-    Find all linear layer names
+parser = argparse.ArgumentParser()
+parser.add_argument('--model_name_or_path', type=str, default='NousResearch/Llama-2-7b-hf',
+                    help='Specify model_name_or_path to set transformer backbone. Default is NousResearch/Llama-2-7b-hf')
+parser.add_argument('--dataset_name_or_path', type=str, default='conll2003',
+                    help='Specify huggingface dataset name or local file path. Default is conll2003.')
+parser.add_argument('--epochs', type=int, default=10, help='Specify number of epochs, default 10')
+parser.add_argument('--batch_size', type=int, default=8, help='Specify number of batch size, default 8')
+parser.add_argument('--learning_rate', type=float, default=1e-4, help='Specify learning rate, default 1e-4')
+parser.add_argument('--weight_decay', type=float, default=0.01, help='Specify weight decay, default 0.01')
+parser.add_argument('--max_length', type=int, default=64, help='Specify max length, default 64')
+parser.add_argument('--lora_r', type=int, default=12, help='Specify lora r, default 12')
+parser.add_argument('--lora_alpha', type=int, default=32, help='Specify lora alpha, default 32')
+parser.add_argument('--lora_dropout', type=float, default=0.1, help='Specify lora alpha, default 0.1')
+# configure hub
+parser.add_argument('--push_to_hub', type=int, default=0, choices=[0, 1], help='Specify push_to_hub, default 0')
+parser.add_argument('--hub_model_id', type=str, default=None,
+                    help='Specify push_to_hub_model_id, default None, format like organization/model_id')
+args = parser.parse_args()
+print(f'Args: {args}')
 
-    :param model: PreTrainedModel
-    :param linear_type: Optional[object] = None, linear type, such as nn.Linear and bnb.nn.Linear4bit.
 
-    :return: List[str], linear layer names
-    """
-    if linear_type is None:
-        linear_type = nn.Linear
-    lora_module_names = set()
-    for name, module in model.named_modules():
-        if isinstance(module, linear_type):
-            names = name.split('.')
-            lora_module_names.add(names[0] if len(names) == 1 else names[-1])
+tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
+if 'mistral' in args.model_name_or_path.lower():
+    tokenizer.add_special_tokens({'pad_token': '<unk>'})
 
-    if 'lm_head' in lora_module_names:
-        lora_module_names.remove('lm_head')
-    return list(lora_module_names)
-
-
-if len(sys.argv) != 3:
-    print('usage: python %.py wnut_17/conll2003 model_size')
-    sys.exit()
-
-task, model_size = sys.argv[1], sys.argv[2]
-assert task in ['wnut_17', 'conll2003']
-
-epochs = 10
-batch_size = 8
-learning_rate = 1e-4
-max_length = 64
-if model_size == '7b':
-    model_id = 'NousResearch/Llama-2-7b-hf'
-    lora_r = 12
-elif model_size == '13b':
-    model_id = 'NousResearch/Llama-2-13b-hf'
-    lora_r = 12
-else:
-    raise NotImplementedError
-tokenizer = AutoTokenizer.from_pretrained(model_id)
 seqeval = evaluate.load("seqeval")
-if task == 'wnut_17':
+if args.dataset_name_or_path == 'wnut_17':
     ds = load_dataset("wnut_17")
     label2id = { "O": 0, "B-corporation": 1, "I-corporation": 2, "B-creative-work": 3, "I-creative-work": 4, "B-group": 5, "I-group": 6, "B-location": 7, "I-location": 8, "B-person": 9, "I-person": 10, "B-product": 11, "I-product": 12, }
-elif task == 'conll2003':
+elif args.dataset_name_or_path == 'conll2003':
     ds = load_dataset("conll2003")
     label2id = {'O': 0, 'B-PER': 1, 'I-PER': 2, 'B-ORG': 3, 'I-ORG': 4, 'B-LOC': 5, 'I-LOC': 6, 'B-MISC': 7, 'I-MISC': 8}
 else:
     raise NotImplementedError
 id2label = {v: k for k, v in label2id.items()}
-label_list = list(label2id.keys()) # ds["train"].features[f"ner_tags"].feature.names
-model = LlamaForTokenClassification.from_pretrained(
-    model_id, num_labels=len(label2id), id2label=id2label, label2id=label2id
+label_list = list(label2id.keys())
+if 'mistral' in args.model_name_or_path.lower():
+    MODEL = MistralForTokenClassification
+elif 'llama' in args.model_name_or_path.lower():
+    MODEL = LlamaForTokenClassification
+else:
+    raise NotImplementedError
+model = MODEL.from_pretrained(
+    args.model_name_or_path, num_labels=len(label2id), id2label=id2label, label2id=label2id
 ).bfloat16()
-# target_modules = find_all_linear_names(model)
-# print('>>> target_modules:', target_modules)
 peft_config = LoraConfig(task_type=TaskType.TOKEN_CLS,
                          inference_mode=False,
-                         r=lora_r, lora_alpha=32, lora_dropout=0.1)
+                         r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=args.lora_dropout)
 model = get_peft_model(model, peft_config)
 model.print_trainable_parameters()
 
 
 def tokenize_and_align_labels(examples):
-    tokenized_inputs = tokenizer(examples["tokens"], is_split_into_words=True, padding='longest', max_length=max_length, truncation=True)
+    tokenized_inputs = tokenizer(examples["tokens"], is_split_into_words=True, padding='longest', max_length=args.max_length, truncation=True)
 
     labels = []
     for i, label in enumerate(examples[f"ner_tags"]):
@@ -127,16 +113,17 @@ def compute_metrics(p):
 
 
 training_args = TrainingArguments(
-    output_dir=f"billm_{task}_llama_{model_size}_ckpt",
-    learning_rate=learning_rate,
-    per_device_train_batch_size=batch_size,
-    per_device_eval_batch_size=batch_size,
-    num_train_epochs=epochs,
-    weight_decay=0.01,
+    output_dir=f"billm_{args.dataset_name_or_path.replace('/', '-')}_{args.model_name_or_path.replace('/', '-')}_ckpt",
+    learning_rate=args.learning_rate,
+    per_device_train_batch_size=args.batch_size,
+    per_device_eval_batch_size=args.batch_size,
+    num_train_epochs=args.epochs,
+    weight_decay=args.weight_decay,
     evaluation_strategy="epoch",
     save_strategy="epoch",
     load_best_model_at_end=True,
-    push_to_hub=False,
+    push_to_hub=args.push_to_hub,
+    hub_model_id=args.hub_model_id,
 )
 
 trainer = Trainer(
