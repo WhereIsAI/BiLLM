@@ -25,10 +25,10 @@ class LlamaModel(LlamaPreTrainedModel):
         self.vocab_size = config.vocab_size
 
         self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size, self.padding_idx)
-        self.layers = zip(
-            [BiLLM_START_INDEX > -1 and layer_idx >= BiLLM_START_INDEX for layer_idx in range(config.num_hidden_layers)],
-            nn.ModuleList([LlamaDecoderLayer(config, layer_idx) for layer_idx in range(config.num_hidden_layers)])
-        )
+        self.bidirectionas = [BiLLM_START_INDEX > -1 and layer_idx >= BiLLM_START_INDEX
+                              for layer_idx in range(config.num_hidden_layers)]
+        self.layers = nn.ModuleList(
+            [LlamaDecoderLayer(config, layer_idx) for layer_idx in range(config.num_hidden_layers)])
         self.norm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
         self.gradient_checkpointing = False
 
@@ -113,7 +113,7 @@ class LlamaModel(LlamaPreTrainedModel):
         all_self_attns = () if output_attentions else None
         next_decoder_cache = None
 
-        for is_bidirectional, decoder_layer in self.layers:
+        for is_bidirectional, decoder_layer in zip(self.bidirectionas, self.layers):
             if output_hidden_states:
                 all_hidden_states += (hidden_states,)
 

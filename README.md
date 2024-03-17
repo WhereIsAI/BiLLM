@@ -3,9 +3,11 @@ Toolkit to convert LLMs from uni- to bi-directional for language understanding t
 
 ## Usage
 
-1) specify start index for bi-directional layers via `export BiLLM_START_INDEX={layer_index}`. if not specified, default is 0, i.e., all layers are bi-directional. If set to -1, BiLLM is disabled.
+1) `python -m pip install -U billm`
 
-2) import LLMs from BiLLM and initialize them as usual.
+2) specify start index for bi-directional layers via `export BiLLM_START_INDEX={layer_index}`. if not specified, default is 0, i.e., all layers are bi-directional. If set to -1, BiLLM is disabled.
+
+3) import LLMs from BiLLM and initialize them as usual.
 
 ```diff
 - from transformers import LLaMAForSequenceClassification, LLaMATokenizer
