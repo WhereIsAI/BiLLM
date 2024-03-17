@@ -19,6 +19,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install -U pdm pytest pytest-cov pytest-sugar
         pdm install --no-lock
+        python -m pip install -e .
     - name: Analysing the code with pytest
       run: |
         pytest -vvvv --cov=BiLLM tests/
