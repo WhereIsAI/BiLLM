@@ -1,6 +1,6 @@
 [project]
 name = "BiLLM"
-version = "0.1.0"
+version = "0.1.1"
 description = "Tool for converting LLMs from uni-directional to bi-directional for tasks like classification and sentence embeddings."
 authors = [
     {name = "Sean Lee", email = "xmlee97@gmail.com"},
