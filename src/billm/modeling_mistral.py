@@ -195,11 +195,6 @@ class MistralModel(MistralPreTrainedModel):
         )
 
 
-class MistralForCausalLM(MistralPreTrainedModel):
-    def __init__(self, config):
-        raise NotImplementedError("BiLLM does not support CausalLM.")
-
-
 @add_start_docstrings(
     """
     The Bi-Mistral Model transformer with a token classification head on top (linear layer).
