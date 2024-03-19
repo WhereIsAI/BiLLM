@@ -22,7 +22,7 @@ parser.add_argument('--batch_size', type=int, default=8, help='Specify number of
 parser.add_argument('--learning_rate', type=float, default=1e-4, help='Specify learning rate, default 1e-4')
 parser.add_argument('--weight_decay', type=float, default=0.01, help='Specify weight decay, default 0.01')
 parser.add_argument('--max_length', type=int, default=64, help='Specify max length, default 64')
-parser.add_argument('--lora_r', type=int, default=12, help='Specify lora r, default 12')
+parser.add_argument('--lora_r', type=int, default=32, help='Specify lora r, default 12')
 parser.add_argument('--lora_alpha', type=int, default=32, help='Specify lora alpha, default 32')
 parser.add_argument('--lora_dropout', type=float, default=0.1, help='Specify lora alpha, default 0.1')
 # configure hub
@@ -137,3 +137,6 @@ trainer = Trainer(
 )
 
 trainer.train()
+# push the best model to the hub
+if args.push_to_hub:
+    trainer.push_to_hub()

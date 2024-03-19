@@ -221,11 +221,6 @@ class LlamaModel(LlamaPreTrainedModel):
         return causal_mask
 
 
-class LlamaForCausalLM(LlamaPreTrainedModel):
-    def __init__(self, config):
-        raise NotImplementedError("BiLLM does not support CausalLM.")
-
-
 @add_start_docstrings(
     """
     The Bi-LLaMa Model transformer with a token classification head on top (linear layer).
