@@ -5,4 +5,4 @@ from .modeling_mistral import *  # NOQA
 from .modeling_qwen2 import *  # NOQA
 
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
