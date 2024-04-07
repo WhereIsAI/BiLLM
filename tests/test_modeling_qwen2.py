@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 
-def test_mistral_model():
+def test_qwen2_model():
     import os
     os.environ['BiLLM_START_INDEX'] = '-1'
 
-    from billm import MistralModel, MistralConfig
+    from billm import Qwen2Model, Qwen2Config
 
-    model = MistralModel(MistralConfig(vocab_size=128,
+    model = Qwen2Model(Qwen2Config(vocab_size=128,
                                        hidden_size=32,
                                        intermediate_size=64,
                                        num_hidden_layers=2,
@@ -15,13 +15,13 @@ def test_mistral_model():
     assert model is not None
 
 
-def test_bimistral_model():
+def test_biqwen2_model():
     import os
     os.environ['BiLLM_START_INDEX'] = '1'
 
-    from billm import MistralModel, MistralConfig
+    from billm import Qwen2Model, Qwen2Config
 
-    model = MistralModel(MistralConfig(vocab_size=128,
+    model = Qwen2Model(Qwen2Config(vocab_size=128,
                                        hidden_size=32,
                                        intermediate_size=64,
                                        num_hidden_layers=2,
@@ -30,13 +30,13 @@ def test_bimistral_model():
 
 
 
-def test_bimistral_lm():
+def test_biqwen2_lm():
     import os
     os.environ['BiLLM_START_INDEX'] = '1'
 
-    from billm import MistralForCausalLM, MistralConfig
+    from billm import Qwen2ForCausalLM, Qwen2Config
 
-    model = MistralForCausalLM(MistralConfig(vocab_size=128,
+    model = Qwen2ForCausalLM(Qwen2Config(vocab_size=128,
                                              hidden_size=32,
                                              intermediate_size=64,
                                              num_hidden_layers=2,
@@ -45,13 +45,13 @@ def test_bimistral_lm():
     assert len(model.model.bidirectionas) > 0
 
 
-def test_bimistral_seq_clf():
+def test_biqwen2_seq_clf():
     import os
     os.environ['BiLLM_START_INDEX'] = '1'
 
-    from billm import MistralForSequenceClassification, MistralConfig
+    from billm import Qwen2ForSequenceClassification, Qwen2Config
 
-    model = MistralForSequenceClassification(MistralConfig(vocab_size=128,
+    model = Qwen2ForSequenceClassification(Qwen2Config(vocab_size=128,
                                                            hidden_size=32,
                                                            intermediate_size=64,
                                                            num_hidden_layers=2,
@@ -60,13 +60,13 @@ def test_bimistral_seq_clf():
     assert len(model.model.bidirectionas) > 0
 
 
-def test_bimistral_token_clf():
+def test_biqwen2_token_clf():
     import os
     os.environ['BiLLM_START_INDEX'] = '1'
 
-    from billm import MistralForTokenClassification, MistralConfig
+    from billm import Qwen2ForTokenClassification, Qwen2Config
 
-    model = MistralForTokenClassification(MistralConfig(vocab_size=128,
+    model = Qwen2ForTokenClassification(Qwen2Config(vocab_size=128,
                                                         hidden_size=32,
                                                         intermediate_size=64,
                                                         num_hidden_layers=2,

@@ -32,18 +32,29 @@ Tool for converting LLMs from uni-directional to bi-directional for tasks like c
 ```diff
 - from transformers import (
 -    LLamaModel,
+-    LLamaForCausalLM,
 -    LLamaForSequenceClassification,
 -    MistralModel,
+-    MistralForCausalLM,
 -    MistralForSequenceClassification
+-    Qwen2Model,
+-    Qwen2ForCausalLM,
+-    Qwen2ForSequenceClassification
 - )
 
 + from billm import (
 +    LLamaModel,
++    LLamaForCausalLM,
 +    LLamaForSequenceClassification,
 +    LLamaForTokenClassification,
 +    MistralModel,
++    MistralForCausalLM,
 +    MistralForSequenceClassification,
 +    MistralForTokenClassification,
++    Qwen2Model,
++    Qwen2ForCausalLM,
++    Qwen2ForSequenceClassification,
++    Qwen2ForTokenClassification
 + )
 ```
 
