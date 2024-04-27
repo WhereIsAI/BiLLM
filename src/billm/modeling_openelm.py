@@ -996,7 +996,7 @@ class OpenELMForSequenceClassification(OpenELMPreTrainedModel):
         super().__init__(config)
         self.num_labels = config.num_labels
         self.model = OpenELMModel(config)
-        self.score = nn.Linear(config.hidden_size, self.num_labels, bias=False)
+        self.score = nn.Linear(config.model_dim, self.num_labels, bias=False)
 
         # Initialize weights and apply final processing
         self.post_init()
@@ -1110,7 +1110,7 @@ class OpenELMForTokenClassification(OpenELMPreTrainedModel):
         else:
             classifier_dropout = 0.1
         self.dropout = nn.Dropout(classifier_dropout)
-        self.classifier = nn.Linear(config.hidden_size, config.num_labels)
+        self.classifier = nn.Linear(config.model_dim, config.num_labels)
 
         # Initialize weights and apply final processing
         self.post_init()
