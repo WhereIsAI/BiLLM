@@ -8,7 +8,7 @@ def test_openelm_model():
     from billm import OpenELMModel, OpenELMConfig
 
     model = OpenELMModel(OpenELMConfig(vocab_size=128,
-                                       head_dim=32,
+                                       head_size=32,
                                        num_transformer_layers=2))
     assert model is not None
 
@@ -20,7 +20,7 @@ def test_biopenelm_model():
     from billm import OpenELMModel, OpenELMConfig
 
     model = OpenELMModel(OpenELMConfig(vocab_size=128,
-                                       head_dim=32,
+                                       head_size=32,
                                        num_transformer_layers=2))
     assert model is not None
 
@@ -33,8 +33,7 @@ def test_biopenelm_lm():
     from billm import OpenELMForCausalLM, OpenELMConfig
 
     model = OpenELMForCausalLM(OpenELMConfig(vocab_size=128,
-                                             head_dim=32,
-                                             intermediate_size=64,
+                                             head_size=32,
                                              num_transformer_layers=2))
     assert model is not None
     assert len(model.model.bidirectionas) > 0
@@ -47,7 +46,7 @@ def test_biopenelm_seq_clf():
     from billm import OpenELMForSequenceClassification, OpenELMConfig
 
     model = OpenELMForSequenceClassification(OpenELMConfig(vocab_size=128,
-                                                           head_dim=32,
+                                                           head_size=32,
                                                            num_transformer_layers=2))
     assert model is not None
     assert len(model.model.bidirectionas) > 0
@@ -60,7 +59,7 @@ def test_biopenelm_token_clf():
     from billm import OpenELMForTokenClassification, OpenELMConfig
 
     model = OpenELMForTokenClassification(OpenELMConfig(vocab_size=128,
-                                                        head_dim=32,
+                                                        head_size=32,
                                                         num_transformer_layers=2))
     assert model is not None
     assert len(model.model.bidirectionas) > 0
