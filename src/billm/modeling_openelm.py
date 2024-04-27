@@ -788,7 +788,7 @@ class OpenELMForCausalLM(OpenELMPreTrainedModel):
 
     def __init__(self, config: OpenELMConfig):
         super().__init__(config)
-        self.transformer = OpenELMModel(config)
+        self.model = OpenELMModel(config)
         self.vocab_size = config.vocab_size
         if config.share_input_output_layers:
             self.lm_head = None
@@ -799,10 +799,10 @@ class OpenELMForCausalLM(OpenELMPreTrainedModel):
         self.post_init()
 
     def get_input_embeddings(self):
-        return self.transformer.token_embeddings
+        return self.model.token_embeddings
 
     def set_input_embeddings(self, value):
-        self.transformer.token_embeddings = value
+        self.model.token_embeddings = value
 
     def get_output_embeddings(self):
         return self.lm_head
@@ -811,10 +811,10 @@ class OpenELMForCausalLM(OpenELMPreTrainedModel):
         self.lm_head = new_embeddings
 
     def set_decoder(self, decoder):
-        self.transformer = decoder
+        self.model = decoder
 
     def get_decoder(self):
-        return self.transformer
+        return self.model
 
     def forward(
         self,
@@ -844,7 +844,7 @@ class OpenELMForCausalLM(OpenELMPreTrainedModel):
             return_dict if return_dict is not None else self.config.use_return_dict
         )
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
-        outputs = self.transformer(
+        outputs = self.model(
             input_ids=input_ids,
             attention_mask=attention_mask,
             position_ids=position_ids,
@@ -861,7 +861,7 @@ class OpenELMForCausalLM(OpenELMPreTrainedModel):
         if self.lm_head is None:
             # shared
             logits = F.linear(
-                hidden_states, weight=self.transformer.token_embeddings.weight
+                hidden_states, weight=self.model.token_embeddings.weight
             )
         else:
             logits = self.lm_head(hidden_states)
