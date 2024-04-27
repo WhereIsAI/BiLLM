@@ -104,6 +104,7 @@ print(tokens)
 
 - LLaMA
 - Mistral
+- Qwen2
 
 ## Citation
 
