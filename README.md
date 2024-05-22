@@ -55,6 +55,10 @@ Tool for converting LLMs from uni-directional to bi-directional for tasks like c
 +    Qwen2ForCausalLM,
 +    Qwen2ForSequenceClassification,
 +    Qwen2ForTokenClassification
++    OpenELMModel,
++    OpenELMForCausalLM,
++    OpenELMForSequenceClassification,
++    OpenELMForTokenClassification
 + )
 ```
 
@@ -105,6 +109,7 @@ print(tokens)
 - LLaMA
 - Mistral
 - Qwen2
+- OpenELM
 
 ## Citation
 
