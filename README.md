@@ -21,6 +21,13 @@ Tool for converting LLMs from uni-directional to bi-directional for tasks like c
 </a>
 
 
+## Supported Models
+
+- LLaMA
+- Mistral
+- Qwen2
+- OpenELM
+
 ## Usage
 
 1) `python -m pip install -U billm`
@@ -103,13 +110,10 @@ tokens = token_classifier(sentence)
 print(tokens)
 ```
 
+### Sentence Embeddings
 
-## Supported Models
+refer to AnglE: https://github.com/SeanLee97/AnglE
 
-- LLaMA
-- Mistral
-- Qwen2
-- OpenELM
 
 ## Citation
 
