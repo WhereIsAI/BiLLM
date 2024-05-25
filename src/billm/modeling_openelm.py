@@ -658,7 +658,7 @@ class OpenELMModel(OpenELMPreTrainedModel):
             position_ids = cache_position.unsqueeze(0)
 
         causal_mask = self._update_causal_mask(attention_mask, inputs_embeds)
-        bi_attention_mask = torch.zeros_like(causal_mask)
+        bi_attention_mask = torch.zeros_like(causal_mask) if causal_mask is not None else None
 
         # embed positions
         hidden_states = inputs_embeds

@@ -103,7 +103,7 @@ class LlamaModel(LlamaPreTrainedModel):
         causal_mask = self._update_causal_mask(
             attention_mask, inputs_embeds, cache_position, past_seen_tokens + inputs_embeds.shape[1]
         )
-        bi_attention_mask = torch.zeros_like(causal_mask)
+        bi_attention_mask = torch.zeros_like(causal_mask) if causal_mask is not None else None
 
         # embed positions
         hidden_states = inputs_embeds
