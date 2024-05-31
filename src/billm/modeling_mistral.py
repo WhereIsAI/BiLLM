@@ -138,7 +138,7 @@ class MistralModel(MistralPreTrainedModel):
                 past_key_values_length,
                 sliding_window=self.config.sliding_window,
             )
-        bi_attention_mask = torch.zeros_like(attention_mask)
+        bi_attention_mask = torch.zeros_like(attention_mask) if attention_mask is not None else None
 
         hidden_states = inputs_embeds
 
