@@ -6,4 +6,4 @@ from .modeling_qwen2 import *  # NOQA
 from .modeling_openelm import *  # NOQA
 
 
-__version__ = '0.1.4'
+__version__ = '0.1.5'
