@@ -593,7 +593,7 @@ files = [
 
 [[package]]
 name = "transformers"
-version = "4.41.1"
+version = "4.46.1"
 requires_python = ">=3.8.0"
 summary = "State-of-the-art Machine Learning for JAX, PyTorch and TensorFlow"
 groups = ["default"]
